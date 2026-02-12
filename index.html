@@ -94,11 +94,13 @@
       padding:18px;
     }
 
+    /* ✅ First screen: buttons left/right with space */
     .btnRow{
       display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      justify-content:center;
+      gap:40px;               /* space between */
+      justify-content:center; /* center the pair */
+      align-items:center;
+      width:100%;
     }
 
     button{
@@ -114,6 +116,7 @@
       transition: transform .12s ease, background .2s ease, border-color .2s ease;
       user-select:none;
       touch-action: manipulation;
+      min-width: 120px;
     }
     button:active{transform: scale(.98)}
 
@@ -121,13 +124,13 @@
       border-color: #22c55e55;
       background: linear-gradient(180deg, #22c55e33, #22c55e18);
     }
+
+    /* ✅ Not absolute at start (so it sits nicely on the row) */
     .no{
       border-color: #ef444455;
       background: linear-gradient(180deg, #ef444433, #ef444418);
-      position:absolute;
-      left:50%;
-      top:58%;
-      transform: translate(-50%,-50%);
+      position:static;
+      transform:none;
     }
 
     .hint{
@@ -202,7 +205,7 @@
       font-size:13px;
     }
 
-    /* The photo box (the red-rectangle spot you showed) */
+    /* Right-side photo box */
     .resultPhoto{
       width: 280px;
       flex: 0 0 280px;
@@ -246,6 +249,8 @@
 
     @media (max-width:720px){
       .stage{height:270px}
+      .btnRow{gap:18px;}
+      button{min-width: 110px;}
       .resultGrid{flex-direction:column;}
       .resultPhoto{width:100%; flex: 0 0 auto; height:220px;}
     }
@@ -283,7 +288,6 @@
             </div>
           </div>
 
-          <!-- Single photo box on the right (your marked rectangle) -->
           <div class="resultPhoto" id="resultPhoto">
             <img id="resultPhotoImg" src="photos/main.jpg" alt="Photo" />
             <div class="photoFallback" id="photoFallback" style="display:none;">
@@ -329,7 +333,7 @@
 
     let dodges = 0;
 
-    // ✅ Döngüsel mesajlar (sıra ile, bitince başa döner)
+    // ✅ Looping hint messages (in order, then repeats)
     const hintMessages = [
       "“No” seçeneği biraz utangaç olabilir…",
       "Bu bir romantik kovalamaca.",
@@ -350,7 +354,16 @@
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
+    function ensureNoAbsolute(){
+      // ✅ Only when we start dodging, we switch to absolute positioning
+      if (noBtn.style.position !== "absolute") {
+        noBtn.style.position = "absolute";
+      }
+    }
+
     function moveNoButton(){
+      ensureNoAbsolute();
+
       const rect = stage.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
 
@@ -410,7 +423,7 @@
       burstHearts();
       result.style.display = "block";
 
-      // YES hint lyric (exactly as requested)
+      // YES lyric
       hint.textContent = "Cause, girl, I was made for you\nAnd, girl, you were made for me";
 
       yesBtn.disabled = true;
@@ -442,16 +455,10 @@
 
     replayBtn.addEventListener("click", () => location.reload());
 
-    // Initial placement of "No" + initial hint
+    // Initial hint
     window.addEventListener("load", () => {
-      const rect = stage.getBoundingClientRect();
-      const btn = noBtn.getBoundingClientRect();
-      const x = rect.width/2 + 78;
-      const y = rect.height/2 + 18;
-      noBtn.style.left = clamp(x - btn.width/2, 14, rect.width - btn.width - 14) + "px";
-      noBtn.style.top  = clamp(y - btn.height/2, 14, rect.height - btn.height - 14) + "px";
-      noBtn.style.transform = "translate(0,0)";
       setHintByDodges();
+      // No button stays static on first screen; it becomes absolute once it starts dodging.
     });
 
     // Clicking stage spawns a heart
