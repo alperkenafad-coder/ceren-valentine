@@ -3,37 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Valentine Surprise</title>
+  <title>Valentine</title>
+
   <style>
     :root{
-      --bg1:#1a0f24;
-      --bg2:#2a1233;
+      --bgA:#1c0f25;
+      --bgB:#2b1234;
+
       --card: rgba(255,255,255,0.08);
-      --card2: rgba(255,255,255,0.06);
-      --stroke: rgba(255,255,255,0.12);
+      --card2: rgba(255,255,255,0.07);
+      --stroke: rgba(255,255,255,0.14);
+      --stroke2: rgba(255,255,255,0.12);
+
       --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.72);
-      --muted2: rgba(255,255,255,0.55);
-      --shadow: 0 12px 40px rgba(0,0,0,0.35);
+      --muted: rgba(255,255,255,0.75);
+      --muted2: rgba(255,255,255,0.58);
+
+      --shadow: 0 16px 45px rgba(0,0,0,0.35);
       --radius: 18px;
     }
 
     *{ box-sizing:border-box; }
+
+    /* (1) MOBIL SCROLL FIX: overflow kilidi yok */
     html, body{
       height:auto;
       margin:0;
       padding:0;
       overflow-x:hidden;
-      overflow-y:auto; /* mobil scroll */
+      overflow-y:auto;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(1100px 600px at 50% 0%, rgba(255,120,200,0.22), transparent 60%),
-                  radial-gradient(900px 500px at 10% 15%, rgba(120,150,255,0.18), transparent 55%),
-                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      background:
+        radial-gradient(1100px 700px at 50% 0%, rgba(255,120,200,0.22), transparent 60%),
+        radial-gradient(900px 500px at 10% 20%, rgba(130,160,255,0.18), transparent 55%),
+        linear-gradient(180deg, var(--bgA), var(--bgB));
     }
 
     .page{
-      min-height: 100dvh; /* iOS için daha doğru */
+      min-height: 100dvh;
       padding: 18px 14px 28px;
       display:flex;
       justify-content:center;
@@ -46,12 +54,12 @@
       gap: 14px;
     }
 
-    .header{
+    .topline{
       text-align:center;
-      font-size: clamp(18px, 2.4vw, 22px);
-      line-height:1.25;
       color: var(--muted);
-      padding: 6px 4px 0;
+      font-size: 18px;
+      line-height:1.2;
+      padding-top: 6px;
     }
 
     .card{
@@ -62,41 +70,38 @@
       overflow:hidden;
     }
 
+    /* Eski şablon hissi: stage üstte büyük alan */
     .stage{
-      position:relative;
-      padding: 16px;
-      border-radius: var(--radius);
-      min-height: 280px;
-      background: radial-gradient(650px 260px at 50% 20%, rgba(255,255,255,0.06), transparent 60%);
+      position: relative;
+      padding: 18px 18px 14px;
     }
 
-    /* mobilde stage daha kısa, ama içerik aşağıda scroll olur */
-    @media (max-width: 520px){
-      .stage{ min-height: 240px; padding: 14px; }
-    }
-
-    .stageInner{
-      position:relative;
-      height: 100%;
-      min-height: inherit;
-      border: 2px dashed rgba(255,255,255,0.14);
+    .stageBox{
+      position: relative;
+      border: 2px dashed rgba(255,255,255,0.16);
       border-radius: calc(var(--radius) - 6px);
+      background: radial-gradient(700px 240px at 50% 20%, rgba(255,255,255,0.06), transparent 62%);
+      height: 260px;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 18px 10px;
+    }
+
+    /* Mobilde stage daha kısa; scroll zaten var */
+    @media (max-width: 520px){
+      .stage{ padding: 14px 14px 12px; }
+      .stageBox{ height: 220px; }
     }
 
     .question{
       position:absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
+      top: 18px;
+      left: 18px;
+      right: 18px;
       text-align:center;
-      font-size: clamp(18px, 3.6vw, 28px);
-      font-weight: 720;
-      letter-spacing: 0.2px;
-      text-shadow: 0 8px 22px rgba(0,0,0,0.35);
+      font-weight: 800;
+      font-size: clamp(20px, 3.8vw, 30px);
+      text-shadow: 0 10px 24px rgba(0,0,0,0.35);
       pointer-events:none;
     }
 
@@ -107,7 +112,7 @@
       user-select:none;
       padding: 12px 18px;
       border-radius: 14px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 16px;
       color: rgba(255,255,255,0.92);
       background: rgba(0,0,0,0.22);
@@ -117,7 +122,7 @@
       white-space: nowrap;
     }
     .btn:hover{ transform: translateY(-1px); }
-    .btn:active{ transform: translateY(0px) scale(0.98); }
+    .btn:active{ transform: translateY(0) scale(0.98); }
 
     .btnYes{
       background: rgba(40,180,120,0.20);
@@ -128,56 +133,53 @@
       border-color: rgba(255,255,255,0.20);
     }
 
-    /* Butonlar stage içinde absolute duracak (kesişmesin diye kontrol kolay) */
+    /* Eski şablon: Yes ortada, No yanında ama boşluklu */
     .btnYes, .btnNo{
       position:absolute;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translate(-50%, -50%);
     }
-
-    /* başlangıçta solda/sağda, arada boşluk */
-    .btnYes{ left: calc(50% - 130px); }
-    .btnNo { left: calc(50% + 30px); }
+    .btnYes{ left: 45%; }
+    .btnNo { left: 60%; }
 
     @media (max-width: 520px){
-      .btnYes{ left: calc(50% - 120px); }
-      .btnNo { left: calc(50% + 20px); }
       .btn{ padding: 12px 16px; font-size: 15px; }
+      .btnYes{ left: 42%; }
+      .btnNo { left: 62%; }
     }
 
-    .hintLyrics{
+    .lyrics{
       text-align:center;
-      padding: 8px 10px 0;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.25;
+      padding: 10px 14px 0;
       white-space: pre-line;
-    }
-
-    .below{
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
     }
 
     .noHint{
       text-align:center;
-      padding: 4px 10px 0;
       color: var(--muted);
       font-size: 15px;
-      min-height: 22px;
+      padding: 6px 14px 12px;
+      min-height: 24px;
+    }
+
+    .result{
+      display:none;
+      padding: 14px;
     }
 
     .resultCard{
-      padding: 16px;
       background: var(--card2);
-      border-top: 1px solid var(--stroke);
+      border: 1px solid var(--stroke2);
+      border-radius: var(--radius);
+      padding: 16px;
     }
 
     .resultTop{
       display:flex;
       align-items:flex-start;
-      justify-content:space-between;
       gap: 14px;
       flex-wrap: wrap;
     }
@@ -188,8 +190,8 @@
     }
 
     .resultTitle{
-      font-size: 28px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
       margin: 0 0 6px 0;
     }
 
@@ -206,31 +208,31 @@
       font-size: 15px;
     }
 
-    /* Tek foto alanı (senin kırmızı işaretlediğin yer gibi) */
-    .resultPhotoBox{
-      flex: 0 0 260px;
-      width: 260px;
+    /* Foto kutusu (senin kırmızı işaretlediğin alan mantığı) */
+    .photoBox{
+      flex: 0 0 280px;
+      width: 280px;
       max-width: 100%;
       border-radius: 16px;
       overflow:hidden;
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.20);
       box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+      min-height: 200px;
       align-self: stretch;
-      min-height: 190px;
     }
     @media (max-width: 720px){
-      .resultPhotoBox{
+      .photoBox{
         flex: 1 1 100%;
         width: 100%;
-        min-height: 210px;
+        min-height: 220px;
       }
     }
 
-    .resultPhotoBox img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .photoBox img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
       display:block;
     }
 
@@ -240,12 +242,13 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .btnGhost{
       background: rgba(255,255,255,0.10);
       border-color: rgba(255,255,255,0.18);
     }
 
-    /* küçük kalpler */
+    /* küçük kalp animasyonu */
     .heart{
       position:absolute;
       font-size: 18px;
@@ -258,35 +261,36 @@
       10%{ opacity:1; }
       to{ opacity:0; transform: translate(-50%, -90px) scale(1.1); }
     }
-
-    .hidden{ display:none !important; }
   </style>
 </head>
 
 <body>
   <div class="page">
     <div class="wrap">
-      <div class="header">Just answer honestly. Totally not a trap. Definitely not.</div>
+
+      <div class="topline">Just answer honestly. Totally not a trap. Definitely not.</div>
 
       <div class="card">
+
         <div class="stage" id="stage">
-          <div class="stageInner" id="stageInner">
+          <div class="stageBox" id="stageBox">
             <div class="question">Do you wanna be my Valentine?</div>
 
             <button class="btn btnYes" id="yesBtn">Yes 💖</button>
             <button class="btn btnNo"  id="noBtn">No 🙈</button>
           </div>
-        </div>
 
-        <div class="hintLyrics">
+          <div class="lyrics">
 Cause, girl, I was made for you
 And, girl, you were made for me
+          </div>
+
+          <div class="noHint" id="noHint"></div>
         </div>
 
-        <div class="below">
-          <div class="noHint" id="noHint"></div>
-
-          <div class="resultCard hidden" id="resultCard">
+        <!-- YES sonrası (eski gibi aşağıda kart) -->
+        <div class="result" id="result">
+          <div class="resultCard">
             <div class="resultTop">
               <div class="resultText">
                 <div class="resultTitle">Yesss! 💘</div>
@@ -299,50 +303,47 @@ And, girl, you were made for me
                 </div>
               </div>
 
-              <!-- Tek fotoğraf kutusu -->
-              <div class="resultPhotoBox">
-                <!-- Foto yolu: photos/main.jpeg (veya .jpg yaparsan burada değiştir) -->
-                <img id="resultPhotoImg" src="photos/main.jpeg" alt="Photo" />
+              <div class="photoBox">
+                <!-- Foto yolu: photos/main.jpeg (jpg ise sadece uzantıyı değiştir) -->
+                <img id="mainPhoto" src="photos/main.jpeg" alt="photo" />
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
     </div>
   </div>
 
 <script>
-  const stage = document.getElementById("stage");
-  const stageInner = document.getElementById("stageInner");
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn  = document.getElementById("noBtn");
-  const noHint = document.getElementById("noHint");
+  const stageBox = document.getElementById("stageBox");
+  const yesBtn   = document.getElementById("yesBtn");
+  const noBtn    = document.getElementById("noBtn");
+  const noHint   = document.getElementById("noHint");
 
-  const resultCard = document.getElementById("resultCard");
-  const copyBtn = document.getElementById("copyBtn");
-  const replayBtn = document.getElementById("replayBtn");
+  const result   = document.getElementById("result");
+  const copyBtn  = document.getElementById("copyBtn");
+  const replayBtn= document.getElementById("replayBtn");
 
-  // No kaçtıkça mesajlar (sıralı, bittiğinde başa sarar)
   const dodgeMessages = [
     "“No” seçeneği biraz utangaç olabilir…",
     "“Bu bir romantik kovalamaca.”",
     "“No kaçıyor ama kalbi burada.”",
+    "🔹 3 kaçış → Tatlı",
     "“Aslında ‘Yes’ demek istiyor olabilir.”",
     "“Bence evren ‘Yes’ diyor.”",
     "“No bile vazgeçmek üzere.”",
+    "🔹 5 kaçış → Komik",
     "“Bu kadar kaçış biraz şüpheli 😏”",
     "“No butonu: panic mode.”",
     "“Kaçmak çözüm değil 👀”",
+    "🔹 8 kaçış → Net Mesaj",
     "“Artık kader devreye girdi 💘”"
   ];
 
   let dodgeCount = 0;
   let dodgingEnabled = true;
-
-  function clamp(v, min, max){
-    return Math.max(min, Math.min(max, v));
-  }
 
   function rectsOverlap(a, b, pad=0){
     return !(
@@ -353,131 +354,104 @@ And, girl, you were made for me
     );
   }
 
-  function setHintByDodge(){
-    // sırayla göster, bittiğinde başa sar
-    const idx = dodgeCount % dodgeMessages.length;
-    noHint.textContent = dodgeMessages[idx];
-  }
-
   function spawnHeart(x, y){
     const h = document.createElement("div");
     h.className = "heart";
     h.textContent = Math.random() < 0.5 ? "💘" : "💖";
     h.style.left = x + "px";
     h.style.top  = y + "px";
-    stageInner.appendChild(h);
+    stageBox.appendChild(h);
     setTimeout(() => h.remove(), 1000);
   }
 
-  function randomPositionAvoidingYes(){
-    const innerRect = stageInner.getBoundingClientRect();
+  function setHint(){
+    const idx = dodgeCount % dodgeMessages.length;
+    noHint.textContent = dodgeMessages[idx];
+  }
+
+  // (2) OVERLAP FIX: No yeni konumu Yes ile kesişemez
+  function moveNoAvoidingYes(){
+    const boxRect = stageBox.getBoundingClientRect();
     const yesRect = yesBtn.getBoundingClientRect();
-    const noRect = noBtn.getBoundingClientRect();
+    const noRect  = noBtn.getBoundingClientRect();
 
     const btnW = noRect.width;
     const btnH = noRect.height;
 
-    // stage içi güvenli alan (kenarlardan pay)
     const pad = 12;
-
     const minX = pad;
-    const maxX = innerRect.width - btnW - pad;
-    const minY = 56; // üstte soru metni var, biraz aşağıdan başla
-    const maxY = innerRect.height - btnH - pad;
+    const maxX = boxRect.width - btnW - pad;
+    const minY = 70; // üstte soru var
+    const maxY = boxRect.height - btnH - pad;
 
-    // yes alanını stageInner koordinatlarına çevir
+    // yes rect'i stageBox lokal koordinata çevir
     const yesLocal = {
-      left:   yesRect.left - innerRect.left,
-      right:  yesRect.right - innerRect.left,
-      top:    yesRect.top - innerRect.top,
-      bottom: yesRect.bottom - innerRect.top
+      left:   yesRect.left - boxRect.left,
+      right:  yesRect.right - boxRect.left,
+      top:    yesRect.top - boxRect.top,
+      bottom: yesRect.bottom - boxRect.top
     };
 
-    // no’nun olası yeni rect’i (local)
-    // yes ile çakışmaması için birkaç deneme yap
-    for(let i=0; i<40; i++){
+    for(let i=0; i<50; i++){
       const x = Math.random() * (maxX - minX) + minX;
       const y = Math.random() * (maxY - minY) + minY;
 
-      const candidate = {
+      const cand = {
         left: x,
         right: x + btnW,
         top: y,
         bottom: y + btnH
       };
 
-      // yes ile kesişmesin (+ bir miktar buffer)
-      if(!rectsOverlap(candidate, yesLocal, 10)){
-        return {x, y};
+      // Yes ile kesişmesin (+buffer)
+      if(!rectsOverlap(cand, yesLocal, 12)){
+        noBtn.style.left = x + "px";
+        noBtn.style.top  = y + "px";
+        noBtn.style.transform = "translate(0,0)";
+        return;
       }
     }
 
-    // çok nadir: bulamazsa yes’ten uzağa “garanti” konum
-    return { x: clamp(20, minX, maxX), y: clamp(innerRect.height - btnH - 20, minY, maxY) };
-  }
-
-  function moveNoButton(){
-    const pos = randomPositionAvoidingYes();
-    noBtn.style.left = pos.x + "px";
-    noBtn.style.top  = pos.y + "px";
-    noBtn.style.transform = "translate(0,0)"; // absolute yerleştirme
-  }
-
-  function initButtonPositions(){
-    // yes/no başlangıçta yan yana (solda/sağda) gibi duruyor.
-    // Ama responsive değişince no absolute local’e geçebilir.
-    // Başlangıç konumu yes/no absolute olduğundan CSS zaten ayarlıyor.
-    // Yine de no’nun top/transform resetleyelim:
-    noBtn.style.top = "50%";
-    noBtn.style.transform = "translateY(-50%)";
-    noBtn.style.left = getComputedStyle(noBtn).left;
+    // aşırı nadir: bulamazsa yes'ten uzağa sabitle
+    noBtn.style.left = (minX) + "px";
+    noBtn.style.top  = (maxY) + "px";
+    noBtn.style.transform = "translate(0,0)";
   }
 
   function showResult(){
-    resultCard.classList.remove("hidden");
+    result.style.display = "block";
     dodgingEnabled = false;
 
-    // küçük kalp patlaması
-    const innerRect = stageInner.getBoundingClientRect();
-    for(let i=0; i<14; i++){
-      const x = Math.random() * innerRect.width;
-      const y = innerRect.height * 0.55 + Math.random() * 40;
-      spawnHeart(x, y);
+    // küçük kalpler
+    const r = stageBox.getBoundingClientRect();
+    for(let i=0; i<12; i++){
+      spawnHeart(Math.random()*r.width, r.height*0.62 + Math.random()*30);
     }
 
-    // result görünür olunca sayfa scroll edilebilir (mobil)
-    // istersen otomatik aşağı kaydır:
-    setTimeout(() => resultCard.scrollIntoView({behavior:"smooth", block:"start"}), 120);
+    // mobilde görünür olsun diye aşağı kaydır (scroll artık var)
+    setTimeout(() => result.scrollIntoView({behavior:"smooth", block:"start"}), 120);
   }
 
-  // Yes
   yesBtn.addEventListener("click", () => showResult());
 
-  // No: kaçsın
-  function handleNoDodge(){
+  function dodge(){
     if(!dodgingEnabled) return;
-
     dodgeCount++;
-    setHintByDodge();
-    moveNoButton();
+    setHint();
+    moveNoAvoidingYes();
   }
 
-  // No’ya tıklamaya çalışınca / yaklaşınca kaçır
   noBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    handleNoDodge();
+    dodge();
   });
+  noBtn.addEventListener("mouseenter", () => dodge());
 
-  // mobilde hover yok; yine de mouse ile yaklaşınca kaçsın (desktop)
-  noBtn.addEventListener("mouseenter", () => handleNoDodge());
-
-  // Stage'e tıklayınca kalp çıkarsın (tatlı detay)
-  stageInner.addEventListener("click", (e) => {
-    const r = stageInner.getBoundingClientRect();
+  stageBox.addEventListener("click", (e) => {
+    const r = stageBox.getBoundingClientRect();
     spawnHeart(e.clientX - r.left, e.clientY - r.top);
   });
 
-  // Kopyala
   copyBtn.addEventListener("click", async () => {
     const text = `Ceren said YES! 💖`;
     try{
@@ -490,20 +464,16 @@ And, girl, you were made for me
     }
   });
 
-  // Tekrar
   replayBtn.addEventListener("click", () => location.reload());
 
-  // İlk yükleme
+  // İlk yükleme: No/Yes başlangıç konumları CSS’teki gibi kalsın (eski şablon)
   window.addEventListener("load", () => {
-    initButtonPositions();
+    // ilk kaçıştan sonra absolute top/left ile yer değiştiriyoruz.
+    // burada bir şey yapmıyoruz.
   });
 
-  // Ekran döndürme/resize sonrası: no butonu garip yerde kalmasın
-  window.addEventListener("resize", () => {
-    if(dodgingEnabled){
-      initButtonPositions();
-    }
-  });
+  // Ekran döndürmede no butonu saçma konumda kalmışsa, bir sonraki kaçışta düzelir.
 </script>
+
 </body>
 </html>
