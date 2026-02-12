@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Valentina?</title>
+  <title>Valentine Surprise</title>
   <style>
     :root{
       --bg1:#0b0b14;
@@ -12,8 +12,6 @@
       --card2:#ffffff14;
       --text:#f7f7ff;
       --muted:#c9c9e6;
-      --yes:#22c55e;
-      --no:#ef4444;
       --btn:#ffffff14;
       --shadow: 0 20px 60px rgba(0,0,0,.45);
     }
@@ -118,6 +116,7 @@
       touch-action: manipulation;
     }
     button:active{transform: scale(.98)}
+
     .yes{
       border-color: #22c55e55;
       background: linear-gradient(180deg, #22c55e33, #22c55e18);
@@ -137,6 +136,7 @@
       font-size:13px;
       text-align:center;
       white-space:pre-line;
+      min-height: 34px;
     }
 
     /* Heart particles */
@@ -155,6 +155,7 @@
       100%{opacity:0; transform:translate(-50%,-140%) scale(1.1)}
     }
 
+    /* Result card with right-side photo */
     .result{
       margin-top:18px;
       display:none;
@@ -163,6 +164,18 @@
       border:1px solid #ffffff24;
       background:#ffffff10;
     }
+
+    .resultGrid{
+      display:flex;
+      gap:14px;
+      align-items:stretch;
+    }
+
+    .resultLeft{
+      flex: 1 1 auto;
+      min-width: 260px;
+    }
+
     .result h2{
       margin:0 0 6px;
       font-size:22px;
@@ -180,6 +193,47 @@
       margin-top:10px;
     }
 
+    .linkBtn{
+      border-color:#ffffff24;
+      background:#ffffff10;
+      font-weight:700;
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:13px;
+    }
+
+    /* The photo box (the red-rectangle spot you showed) */
+    .resultPhoto{
+      width: 280px;
+      flex: 0 0 280px;
+      border-radius:16px;
+      border:1px solid #ffffff24;
+      background:#00000025;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .resultPhoto img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+    .photoFallback{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:14px;
+      text-align:center;
+      color:#ffffffb0;
+      font-size:12px;
+      background:linear-gradient(180deg, #00000000, #00000055);
+    }
+
     .footer{
       margin-top:16px;
       display:flex;
@@ -190,116 +244,10 @@
       font-size:12px;
     }
 
-    .linkBtn{
-      border-color:#ffffff24;
-      background:#ffffff10;
-      font-weight:700;
-      padding:10px 14px;
-      border-radius:12px;
-      font-size:13px;
-    }
-
-    /* Gallery */
-    .galleryWrap{
-      margin-top:14px;
-      display:none;
-      border-radius:18px;
-      border:1px solid #ffffff24;
-      background:#ffffff0c;
-      padding:14px;
-    }
-    .galleryTitle{
-      margin:0 0 10px;
-      color:#ffffffc8;
-      font-size:13px;
-      letter-spacing:.2px;
-    }
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-    }
-    .tile{
-      border-radius:14px;
-      overflow:hidden;
-      border:1px solid #ffffff20;
-      background:#00000025;
-      aspect-ratio: 1 / 1;
-      position:relative;
-      cursor:pointer;
-      transition: transform .12s ease, border-color .2s ease;
-    }
-    .tile:hover{transform: translateY(-1px); border-color:#ffffff38}
-    .tile img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    /* Modal */
-    .modal{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.65);
-      display:none;
-      place-items:center;
-      padding:18px;
-      z-index:50;
-    }
-    .modalCard{
-      width:min(920px, 96vw);
-      background: #0b0b14cc;
-      border:1px solid #ffffff24;
-      border-radius:20px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(10px);
-      position:relative;
-    }
-    .modalImg{
-      width:100%;
-      height:min(72vh, 640px);
-      object-fit:contain;
-      background:#00000055;
-      display:block;
-    }
-    .modalTop{
-      position:absolute;
-      top:10px;
-      right:10px;
-      display:flex;
-      gap:10px;
-      z-index:2;
-    }
-    .iconBtn{
-      background:#ffffff10;
-      border:1px solid #ffffff22;
-      color:#fff;
-      border-radius:12px;
-      padding:8px 10px;
-      cursor:pointer;
-      font-weight:800;
-    }
-    .navBtn{
-      position:absolute;
-      top:50%;
-      transform:translateY(-50%);
-      background:#ffffff10;
-      border:1px solid #ffffff22;
-      color:#fff;
-      border-radius:14px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:900;
-    }
-    .prevBtn{left:10px}
-    .nextBtn{right:10px}
-
-    @media (max-width:640px){
+    @media (max-width:720px){
       .stage{height:270px}
-      .gallery{grid-template-columns: repeat(2, 1fr);}
-      .modalImg{height:min(70vh, 560px)}
+      .resultGrid{flex-direction:column;}
+      .resultPhoto{width:100%; flex: 0 0 auto; height:220px;}
     }
   </style>
 </head>
@@ -323,21 +271,27 @@
       <div class="hint" id="hint">“No” seçeneği biraz utangaç olabilir…</div>
 
       <div class="result" id="result">
-        <h2 id="resultTitle">Yesss! 💘</h2>
-        <p id="resultText">
-Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
-        </p>
-        <div class="small" id="signature">— Alp</div>
-        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="linkBtn" id="copyBtn">Mesajı kopyala</button>
-          <button class="linkBtn" id="replayBtn">Tekrar oynat</button>
-        </div>
-      </div>
+        <div class="resultGrid">
+          <div class="resultLeft">
+            <h2 id="resultTitle">Yesss! 💘</h2>
+            <p id="resultText">Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.</p>
+            <div class="small" id="signature">— Alp</div>
 
-      <!-- Photo Gallery (shows after YES) -->
-      <div class="galleryWrap" id="galleryWrap">
-        <div class="galleryTitle">💞 Small gallery (tap to enlarge)</div>
-        <div class="gallery" id="gallery"></div>
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="linkBtn" id="copyBtn">Mesajı kopyala</button>
+              <button class="linkBtn" id="replayBtn">Tekrar oynat</button>
+            </div>
+          </div>
+
+          <!-- Single photo box on the right (your marked rectangle) -->
+          <div class="resultPhoto" id="resultPhoto">
+            <img id="resultPhotoImg" src="photos/main.jpg" alt="Photo" />
+            <div class="photoFallback" id="photoFallback" style="display:none;">
+              Fotoğraf henüz yüklenmedi.<br/>
+              Repo’ya <b>photos/main.jpg</b> olarak ekle.
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="footer">
@@ -347,20 +301,8 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal" id="modal">
-    <div class="modalCard" role="dialog" aria-modal="true">
-      <div class="modalTop">
-        <button class="iconBtn" id="closeModal" aria-label="Close">✕</button>
-      </div>
-      <button class="navBtn prevBtn" id="prevBtn" aria-label="Previous">‹</button>
-      <img class="modalImg" id="modalImg" alt="Photo" />
-      <button class="navBtn nextBtn" id="nextBtn" aria-label="Next">›</button>
-    </div>
-  </div>
-
   <script>
-    // --- Personalize via URL params: ?to=Ceren&from=Alp
+    // Optional personalize via URL params: ?to=Ceren&from=Alp
     const params = new URLSearchParams(location.search);
     const toName = params.get("to") || "Ceren";
     const fromName = params.get("from") || "Alp";
@@ -381,59 +323,29 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
     const copyBtn = document.getElementById("copyBtn");
     const replayBtn = document.getElementById("replayBtn");
 
-    const galleryWrap = document.getElementById("galleryWrap");
-    const galleryEl = document.getElementById("gallery");
-
-    // Modal elements
-    const modal = document.getElementById("modal");
-    const modalImg = document.getElementById("modalImg");
-    const closeModal = document.getElementById("closeModal");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    // Single photo
+    const resultPhotoImg = document.getElementById("resultPhotoImg");
+    const photoFallback = document.getElementById("photoFallback");
 
     let dodges = 0;
 
-    // --- Progressive hint messages
-    const hintStart = [
+    // ✅ Döngüsel mesajlar (sıra ile, bitince başa döner)
+    const hintMessages = [
       "“No” seçeneği biraz utangaç olabilir…",
       "Bu bir romantik kovalamaca.",
-      "No kaçıyor ama kalbi burada."
-    ];
-
-    const hintSweet = [
+      "No kaçıyor ama kalbi burada.",
       "Aslında ‘Yes’ demek istiyor olabilir.",
       "Bence evren ‘Yes’ diyor.",
-      "No bile vazgeçmek üzere."
-    ];
-
-    const hintFunny = [
+      "No bile vazgeçmek üzere.",
       "Bu kadar kaçış biraz şüpheli 😏",
       "No butonu: panic mode.",
-      "Kaçmak çözüm değil 👀"
+      "Kaçmak çözüm değil 👀",
+      "Artık kader devreye girdi 💘"
     ];
 
-    const hintFate = "Artık kader devreye girdi 💘";
-
     function setHintByDodges(){
-      // 0-2: start (rotate)
-      if (dodges <= 2){
-        hint.textContent = hintStart[Math.min(dodges, hintStart.length-1)];
-        return;
-      }
-      // 3-4: sweet (rotate)
-      if (dodges <= 4){
-        const idx = (dodges - 3) % hintSweet.length;
-        hint.textContent = hintSweet[idx];
-        return;
-      }
-      // 5-7: funny (rotate)
-      if (dodges <= 7){
-        const idx = (dodges - 5) % hintFunny.length;
-        hint.textContent = hintFunny[idx];
-        return;
-      }
-      // 8+: fate
-      hint.textContent = hintFate;
+      const index = dodges % hintMessages.length;
+      hint.textContent = hintMessages[index];
     }
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
@@ -455,11 +367,9 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
 
       dodges++;
       setHintByDodges();
-
-      // Optional: after many dodges, reduce annoyance by slowing movement a bit
     }
 
-    // Make it hard to click "No" on desktop + mobile
+    // Make it hard to click "No"
     const dodgeEvents = ["mouseenter", "touchstart", "pointerenter"];
     dodgeEvents.forEach(ev => {
       noBtn.addEventListener(ev, (e) => {
@@ -468,7 +378,6 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
       }, {passive:false});
     });
 
-    // If someone actually clicks No (rare), still dodge
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
       moveNoButton();
@@ -497,85 +406,17 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
       }
     }
 
-    // --- Photo list (you will upload later)
-    // Put your images in repo: photos/1.jpg ... photos/6.jpg
-    const photos = [
-      "photos/1.jpg",
-      "photos/2.jpg",
-      "photos/3.jpg",
-      "photos/4.jpg",
-      "photos/5.jpg",
-      "photos/6.jpg"
-    ];
-
-    function buildGallery(){
-      galleryEl.innerHTML = "";
-      photos.forEach((src, i) => {
-        const tile = document.createElement("div");
-        tile.className = "tile";
-        tile.innerHTML = `<img src="${src}" alt="Photo ${i+1}" loading="lazy" />`;
-        tile.addEventListener("click", () => openModal(i));
-        galleryEl.appendChild(tile);
-      });
-    }
-
-    let currentIndex = 0;
-
-    function openModal(i){
-      currentIndex = i;
-      modalImg.src = photos[currentIndex];
-      modal.style.display = "grid";
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeModalFn(){
-      modal.style.display = "none";
-      document.body.style.overflow = "hidden"; // keep hidden because page uses overflow hidden
-      // Note: the page already uses overflow hidden for background; OK.
-    }
-
-    function showPrev(){
-      currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-      modalImg.src = photos[currentIndex];
-    }
-
-    function showNext(){
-      currentIndex = (currentIndex + 1) % photos.length;
-      modalImg.src = photos[currentIndex];
-    }
-
-    closeModal.addEventListener("click", closeModalFn);
-    prevBtn.addEventListener("click", showPrev);
-    nextBtn.addEventListener("click", showNext);
-
-    // Close modal by clicking outside card
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModalFn();
-    });
-
-    // Keyboard controls
-    window.addEventListener("keydown", (e) => {
-      if (modal.style.display !== "grid") return;
-      if (e.key === "Escape") closeModalFn();
-      if (e.key === "ArrowLeft") showPrev();
-      if (e.key === "ArrowRight") showNext();
-    });
-
     function showResult(){
       burstHearts();
       result.style.display = "block";
 
-      // YES hint lyric
+      // YES hint lyric (exactly as requested)
       hint.textContent = "Cause, girl, I was made for you\nAnd, girl, you were made for me";
 
       yesBtn.disabled = true;
       noBtn.style.display = "none";
 
-      // Show gallery
-      buildGallery();
-      galleryWrap.style.display = "block";
-
-      // Extra hearts over time
+      // Gentle extra hearts
       let t = 0;
       const interval = setInterval(() => {
         t++;
@@ -585,7 +426,7 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
       }, 120);
     }
 
-    yesBtn.addEventListener("click", () => showResult());
+    yesBtn.addEventListener("click", showResult);
 
     copyBtn.addEventListener("click", async () => {
       const text = `${toName} said YES! 💖`;
@@ -601,7 +442,7 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
 
     replayBtn.addEventListener("click", () => location.reload());
 
-    // Place "No" inside stage initially with absolute positioning
+    // Initial placement of "No" + initial hint
     window.addEventListener("load", () => {
       const rect = stage.getBoundingClientRect();
       const btn = noBtn.getBoundingClientRect();
@@ -617,6 +458,12 @@ Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
     stage.addEventListener("click", (e) => {
       const rect = stage.getBoundingClientRect();
       spawnHeart(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    // Photo fallback if not found
+    resultPhotoImg.addEventListener("error", () => {
+      resultPhotoImg.style.display = "none";
+      photoFallback.style.display = "grid";
     });
   </script>
 </body>
