@@ -361,18 +361,49 @@
       }
     }
 
+    function rectsOverlap(a, b, pad=0){
+      return !(
+        a.right + pad < b.left ||
+        a.left  - pad > b.right ||
+        a.bottom + pad < b.top ||
+        a.top   - pad > b.bottom
+      );
+    }
+
     function moveNoButton(){
       ensureNoAbsolute();
 
       const rect = stage.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
 
       const pad = 14;
       const maxX = rect.width - btnRect.width - pad;
       const maxY = rect.height - btnRect.height - pad;
 
-      const x = Math.random() * maxX + pad;
-      const y = Math.random() * maxY + pad;
+      // ✅ (1) No, Yes'in üstüne gelmesin: Yes'i stage içi koordinata çevir
+      const yesLocal = {
+        left: yesRect.left - rect.left,
+        right: yesRect.right - rect.left,
+        top: yesRect.top - rect.top,
+        bottom: yesRect.bottom - rect.top
+      };
+
+      // Birkaç deneme yap, çakışma varsa tekrar dene
+      let x, y;
+      for (let i = 0; i < 60; i++) {
+        x = Math.random() * maxX + pad;
+        y = Math.random() * maxY + pad;
+
+        const cand = {
+          left: x,
+          right: x + btnRect.width,
+          top: y,
+          bottom: y + btnRect.height
+        };
+
+        if (!rectsOverlap(cand, yesLocal, 10)) break; // 10px güvenlik payı
+      }
 
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
@@ -428,6 +459,13 @@
 
       yesBtn.disabled = true;
       noBtn.style.display = "none";
+
+      // ✅ (2) Yes sonrası mobilde sığmıyor: scroll aç
+      document.body.style.overflowY = "auto";
+      document.body.style.overflowX = "hidden";
+      const wrap = document.querySelector(".wrap");
+      wrap.style.height = "auto";
+      wrap.style.placeItems = "start center";
 
       // Gentle extra hearts
       let t = 0;
