@@ -2,478 +2,476 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Valentine</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine Surprise</title>
   <style>
     :root{
-      --bgA:#1c0f25;
-      --bgB:#2b1234;
-
-      --card: rgba(255,255,255,0.08);
-      --card2: rgba(255,255,255,0.07);
-      --stroke: rgba(255,255,255,0.14);
-      --stroke2: rgba(255,255,255,0.12);
-
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.75);
-      --muted2: rgba(255,255,255,0.58);
-
-      --shadow: 0 16px 45px rgba(0,0,0,0.35);
-      --radius: 18px;
+      --bg1:#0b0b14;
+      --bg2:#1b0b2a;
+      --card:#ffffff0f;
+      --card2:#ffffff14;
+      --text:#f7f7ff;
+      --muted:#c9c9e6;
+      --btn:#ffffff14;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
     }
-
-    *{ box-sizing:border-box; }
-
-    /* (1) MOBIL SCROLL FIX: overflow kilidi yok */
-    html, body{
-      height:auto;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
       margin:0;
-      padding:0;
-      overflow-x:hidden;
-      overflow-y:auto;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
       background:
-        radial-gradient(1100px 700px at 50% 0%, rgba(255,120,200,0.22), transparent 60%),
-        radial-gradient(900px 500px at 10% 20%, rgba(130,160,255,0.18), transparent 55%),
-        linear-gradient(180deg, var(--bgA), var(--bgB));
-    }
-
-    .page{
-      min-height: 100dvh;
-      padding: 18px 14px 28px;
-      display:flex;
-      justify-content:center;
+        radial-gradient(1200px 800px at 20% 20%, #ff3d9a2a, transparent 60%),
+        radial-gradient(900px 700px at 80% 30%, #7c3aed25, transparent 55%),
+        radial-gradient(900px 700px at 55% 85%, #22c55e1f, transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow:hidden;
     }
 
     .wrap{
-      width: min(920px, 100%);
-      display:flex;
-      flex-direction:column;
-      gap: 14px;
-    }
-
-    .topline{
-      text-align:center;
-      color: var(--muted);
-      font-size: 18px;
-      line-height:1.2;
-      padding-top: 6px;
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
     }
 
     .card{
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
+      width:min(820px, 94vw);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid #ffffff1c;
+      border-radius:28px;
+      padding:28px;
       box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 14px;
+      border:1px solid #ffffff24;
+      border-radius:999px;
+      background:#ffffff10;
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+
+    .title{
+      margin:18px 0 8px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height:1.08;
+      letter-spacing:-.6px;
+    }
+
+    .subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size: clamp(14px, 2.2vw, 16px);
+      line-height:1.5;
+    }
+
+    .stage{
+      margin-top:16px;
+      position:relative;
+      height:240px;
+      border-radius:22px;
+      border:1px dashed #ffffff26;
+      background: #00000018;
       overflow:hidden;
     }
 
-    /* Eski şablon hissi: stage üstte büyük alan */
-    .stage{
-      position: relative;
-      padding: 18px 18px 14px;
+    .buttons{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      gap:14px;
+      padding:18px;
     }
 
-    .stageBox{
-      position: relative;
-      border: 2px dashed rgba(255,255,255,0.16);
-      border-radius: calc(var(--radius) - 6px);
-      background: radial-gradient(700px 240px at 50% 20%, rgba(255,255,255,0.06), transparent 62%);
-      height: 260px;
+    /* ✅ First screen: buttons left/right with space */
+    .btnRow{
       display:flex;
+      gap:40px;               /* space between */
+      justify-content:center; /* center the pair */
       align-items:center;
-      justify-content:center;
+      width:100%;
     }
 
-    /* Mobilde stage daha kısa; scroll zaten var */
-    @media (max-width: 520px){
-      .stage{ padding: 14px 14px 12px; }
-      .stageBox{ height: 220px; }
-    }
-
-    .question{
-      position:absolute;
-      top: 18px;
-      left: 18px;
-      right: 18px;
-      text-align:center;
-      font-weight: 800;
-      font-size: clamp(20px, 3.8vw, 30px);
-      text-shadow: 0 10px 24px rgba(0,0,0,0.35);
-      pointer-events:none;
-    }
-
-    .btn{
+    button{
       appearance:none;
-      border:none;
+      border:1px solid #ffffff24;
+      background: var(--btn);
+      color:var(--text);
+      padding:12px 18px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:16px;
       cursor:pointer;
+      transition: transform .12s ease, background .2s ease, border-color .2s ease;
       user-select:none;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 16px;
-      color: rgba(255,255,255,0.92);
-      background: rgba(0,0,0,0.22);
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.25);
-      transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
-      white-space: nowrap;
+      touch-action: manipulation;
+      min-width: 120px;
     }
-    .btn:hover{ transform: translateY(-1px); }
-    .btn:active{ transform: translateY(0) scale(0.98); }
+    button:active{transform: scale(.98)}
 
-    .btnYes{
-      background: rgba(40,180,120,0.20);
-      border-color: rgba(40,180,120,0.40);
-    }
-    .btnNo{
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.20);
+    .yes{
+      border-color: #22c55e55;
+      background: linear-gradient(180deg, #22c55e33, #22c55e18);
     }
 
-    /* Eski şablon: Yes ortada, No yanında ama boşluklu */
-    .btnYes, .btnNo{
+    /* ✅ Not absolute at start (so it sits nicely on the row) */
+    .no{
+      border-color: #ef444455;
+      background: linear-gradient(180deg, #ef444433, #ef444418);
+      position:static;
+      transform:none;
+    }
+
+    .hint{
+      margin-top:14px;
+      color:#ffffffb0;
+      font-size:13px;
+      text-align:center;
+      white-space:pre-line;
+      min-height: 34px;
+    }
+
+    /* Heart particles */
+    .heart{
       position:absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
+      font-size:18px;
+      pointer-events:none;
+      opacity:0;
+      transform: translate(-50%,-50%) scale(.8);
+      animation: pop 900ms ease forwards;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.25));
     }
-    .btnYes{ left: 45%; }
-    .btnNo { left: 60%; }
-
-    @media (max-width: 520px){
-      .btn{ padding: 12px 16px; font-size: 15px; }
-      .btnYes{ left: 42%; }
-      .btnNo { left: 62%; }
-    }
-
-    .lyrics{
-      text-align:center;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.25;
-      padding: 10px 14px 0;
-      white-space: pre-line;
+    @keyframes pop{
+      0%{opacity:0; transform:translate(-50%,-30%) scale(.6)}
+      15%{opacity:1; transform:translate(-50%,-50%) scale(1)}
+      100%{opacity:0; transform:translate(-50%,-140%) scale(1.1)}
     }
 
-    .noHint{
-      text-align:center;
-      color: var(--muted);
-      font-size: 15px;
-      padding: 6px 14px 12px;
-      min-height: 24px;
-    }
-
+    /* Result card with right-side photo */
     .result{
+      margin-top:18px;
       display:none;
-      padding: 14px;
+      padding:16px 18px;
+      border-radius:18px;
+      border:1px solid #ffffff24;
+      background:#ffffff10;
     }
 
-    .resultCard{
-      background: var(--card2);
-      border: 1px solid var(--stroke2);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-
-    .resultTop{
+    .resultGrid{
       display:flex;
-      align-items:flex-start;
-      gap: 14px;
-      flex-wrap: wrap;
+      gap:14px;
+      align-items:stretch;
     }
 
-    .resultText{
-      flex: 1 1 320px;
+    .resultLeft{
+      flex: 1 1 auto;
       min-width: 260px;
     }
 
-    .resultTitle{
-      font-size: 30px;
-      font-weight: 900;
-      margin: 0 0 6px 0;
+    .result h2{
+      margin:0 0 6px;
+      font-size:22px;
+      letter-spacing:-.2px;
+    }
+    .result p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      white-space:pre-line;
+    }
+    .small{
+      font-size:12px;
+      opacity:.85;
+      margin-top:10px;
     }
 
-    .resultMain{
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.35;
-      color: rgba(255,255,255,0.86);
+    .linkBtn{
+      border-color:#ffffff24;
+      background:#ffffff10;
+      font-weight:700;
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:13px;
     }
 
-    .sign{
-      margin-top: 10px;
-      color: var(--muted2);
-      font-size: 15px;
-    }
-
-    /* Foto kutusu (senin kırmızı işaretlediğin alan mantığı) */
-    .photoBox{
-      flex: 0 0 280px;
+    /* Right-side photo box */
+    .resultPhoto{
       width: 280px;
-      max-width: 100%;
-      border-radius: 16px;
+      flex: 0 0 280px;
+      border-radius:16px;
+      border:1px solid #ffffff24;
+      background:#00000025;
       overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.20);
-      box-shadow: 0 10px 26px rgba(0,0,0,0.25);
-      min-height: 200px;
-      align-self: stretch;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
     }
-    @media (max-width: 720px){
-      .photoBox{
-        flex: 1 1 100%;
-        width: 100%;
-        min-height: 220px;
-      }
-    }
-
-    .photoBox img{
+    .resultPhoto img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
+      transform: scale(1.02);
     }
-
-    .actions{
-      margin-top: 12px;
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btnGhost{
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.18);
-    }
-
-    /* küçük kalp animasyonu */
-    .heart{
+    .photoFallback{
       position:absolute;
-      font-size: 18px;
-      pointer-events:none;
-      animation: floatUp 900ms ease-out forwards;
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.35));
+      inset:0;
+      display:grid;
+      place-items:center;
+      padding:14px;
+      text-align:center;
+      color:#ffffffb0;
+      font-size:12px;
+      background:linear-gradient(180deg, #00000000, #00000055);
     }
-    @keyframes floatUp{
-      from{ opacity:0; transform: translate(-50%, 10px) scale(0.9); }
-      10%{ opacity:1; }
-      to{ opacity:0; transform: translate(-50%, -90px) scale(1.1); }
+
+    .footer{
+      margin-top:16px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      color:#ffffff85;
+      font-size:12px;
+    }
+
+    @media (max-width:720px){
+      .stage{height:270px}
+      .btnRow{gap:18px;}
+      button{min-width: 110px;}
+      .resultGrid{flex-direction:column;}
+      .resultPhoto{width:100%; flex: 0 0 auto; height:220px;}
     }
   </style>
 </head>
-
 <body>
-  <div class="page">
-    <div class="wrap">
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="badge">💌 <span id="badgeText">A tiny question for Ceren</span></div>
 
-      <div class="topline">Just answer honestly. Totally not a trap. Definitely not.</div>
+      <h1 class="title" id="q">Ceren… will you be my valentine? 🙂</h1>
+      <p class="subtitle" id="sub">Just answer honestly. Totally not a trap. Definitely not.</p>
 
-      <div class="card">
-
-        <div class="stage" id="stage">
-          <div class="stageBox" id="stageBox">
-            <div class="question">Do you wanna be my Valentine?</div>
-
-            <button class="btn btnYes" id="yesBtn">Yes 💖</button>
-            <button class="btn btnNo"  id="noBtn">No 🙈</button>
+      <div class="stage" id="stage" aria-label="Valentine stage">
+        <div class="buttons">
+          <div class="btnRow">
+            <button class="yes" id="yesBtn">Yes 💖</button>
+            <button class="no" id="noBtn">No 😶</button>
           </div>
-
-          <div class="lyrics">
-Cause, girl, I was made for you
-And, girl, you were made for me
-          </div>
-
-          <div class="noHint" id="noHint"></div>
         </div>
+      </div>
 
-        <!-- YES sonrası (eski gibi aşağıda kart) -->
-        <div class="result" id="result">
-          <div class="resultCard">
-            <div class="resultTop">
-              <div class="resultText">
-                <div class="resultTitle">Yesss! 💘</div>
-                <p class="resultMain">Tamam artık sana rahatça “Sevgilim” demeye devam edebileceğim.</p>
-                <div class="sign">— Alp</div>
+      <div class="hint" id="hint">“No” seçeneği biraz utangaç olabilir…</div>
 
-                <div class="actions">
-                  <button class="btn btnGhost" id="copyBtn">Mesajı kopyala</button>
-                  <button class="btn btnGhost" id="replayBtn">Tekrar oynat</button>
-                </div>
-              </div>
+      <div class="result" id="result">
+        <div class="resultGrid">
+          <div class="resultLeft">
+            <h2 id="resultTitle">Yesss! 💘</h2>
+            <p id="resultText">Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.</p>
+            <div class="small" id="signature">— Alp</div>
 
-              <div class="photoBox">
-                <!-- Foto yolu: photos/main.jpeg (jpg ise sadece uzantıyı değiştir) -->
-                <img id="mainPhoto" src="photos/main.jpeg" alt="photo" />
-              </div>
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="linkBtn" id="copyBtn">Mesajı kopyala</button>
+              <button class="linkBtn" id="replayBtn">Tekrar oynat</button>
+            </div>
+          </div>
+
+          <div class="resultPhoto" id="resultPhoto">
+            <img id="resultPhotoImg" src="photos/main.jpg" alt="Photo" />
+            <div class="photoFallback" id="photoFallback" style="display:none;">
+              Fotoğraf henüz yüklenmedi.<br/>
+              Repo’ya <b>photos/main.jpg</b> olarak ekle.
             </div>
           </div>
         </div>
-
       </div>
 
+      <div class="footer">
+        <span id="footerLeft">Made with mild panic & lots of love.</span>
+        <span id="footerRight">💗</span>
+      </div>
     </div>
   </div>
 
-<script>
-  const stageBox = document.getElementById("stageBox");
-  const yesBtn   = document.getElementById("yesBtn");
-  const noBtn    = document.getElementById("noBtn");
-  const noHint   = document.getElementById("noHint");
+  <script>
+    // Optional personalize via URL params: ?to=Ceren&from=Alp
+    const params = new URLSearchParams(location.search);
+    const toName = params.get("to") || "Ceren";
+    const fromName = params.get("from") || "Alp";
 
-  const result   = document.getElementById("result");
-  const copyBtn  = document.getElementById("copyBtn");
-  const replayBtn= document.getElementById("replayBtn");
+    const q = document.getElementById("q");
+    const badgeText = document.getElementById("badgeText");
+    const signature = document.getElementById("signature");
 
-  const dodgeMessages = [
-    "“No” seçeneği biraz utangaç olabilir…",
-    "“Bu bir romantik kovalamaca.”",
-    "“No kaçıyor ama kalbi burada.”",
-    "🔹 3 kaçış → Tatlı",
-    "“Aslında ‘Yes’ demek istiyor olabilir.”",
-    "“Bence evren ‘Yes’ diyor.”",
-    "“No bile vazgeçmek üzere.”",
-    "🔹 5 kaçış → Komik",
-    "“Bu kadar kaçış biraz şüpheli 😏”",
-    "“No butonu: panic mode.”",
-    "“Kaçmak çözüm değil 👀”",
-    "🔹 8 kaçış → Net Mesaj",
-    "“Artık kader devreye girdi 💘”"
-  ];
+    q.textContent = `${toName}… will you be my valentine? 🙂`;
+    badgeText.textContent = `A tiny question for ${toName}`;
+    signature.textContent = `— ${fromName}`;
 
-  let dodgeCount = 0;
-  let dodgingEnabled = true;
+    const stage = document.getElementById("stage");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const hint = document.getElementById("hint");
+    const result = document.getElementById("result");
+    const copyBtn = document.getElementById("copyBtn");
+    const replayBtn = document.getElementById("replayBtn");
 
-  function rectsOverlap(a, b, pad=0){
-    return !(
-      a.right + pad < b.left ||
-      a.left  - pad > b.right ||
-      a.bottom + pad < b.top ||
-      a.top   - pad > b.bottom
-    );
-  }
+    // Single photo
+    const resultPhotoImg = document.getElementById("resultPhotoImg");
+    const photoFallback = document.getElementById("photoFallback");
 
-  function spawnHeart(x, y){
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.textContent = Math.random() < 0.5 ? "💘" : "💖";
-    h.style.left = x + "px";
-    h.style.top  = y + "px";
-    stageBox.appendChild(h);
-    setTimeout(() => h.remove(), 1000);
-  }
+    let dodges = 0;
 
-  function setHint(){
-    const idx = dodgeCount % dodgeMessages.length;
-    noHint.textContent = dodgeMessages[idx];
-  }
+    // ✅ Looping hint messages (in order, then repeats)
+    const hintMessages = [
+      "“No” seçeneği biraz utangaç olabilir…",
+      "Bu bir romantik kovalamaca.",
+      "No kaçıyor ama kalbi burada.",
+      "Aslında ‘Yes’ demek istiyor olabilir.",
+      "Bence evren ‘Yes’ diyor.",
+      "No bile vazgeçmek üzere.",
+      "Bu kadar kaçış biraz şüpheli 😏",
+      "No butonu: panic mode.",
+      "Kaçmak çözüm değil 👀",
+      "Artık kader devreye girdi 💘"
+    ];
 
-  // (2) OVERLAP FIX: No yeni konumu Yes ile kesişemez
-  function moveNoAvoidingYes(){
-    const boxRect = stageBox.getBoundingClientRect();
-    const yesRect = yesBtn.getBoundingClientRect();
-    const noRect  = noBtn.getBoundingClientRect();
+    function setHintByDodges(){
+      const index = dodges % hintMessages.length;
+      hint.textContent = hintMessages[index];
+    }
 
-    const btnW = noRect.width;
-    const btnH = noRect.height;
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-    const pad = 12;
-    const minX = pad;
-    const maxX = boxRect.width - btnW - pad;
-    const minY = 70; // üstte soru var
-    const maxY = boxRect.height - btnH - pad;
-
-    // yes rect'i stageBox lokal koordinata çevir
-    const yesLocal = {
-      left:   yesRect.left - boxRect.left,
-      right:  yesRect.right - boxRect.left,
-      top:    yesRect.top - boxRect.top,
-      bottom: yesRect.bottom - boxRect.top
-    };
-
-    for(let i=0; i<50; i++){
-      const x = Math.random() * (maxX - minX) + minX;
-      const y = Math.random() * (maxY - minY) + minY;
-
-      const cand = {
-        left: x,
-        right: x + btnW,
-        top: y,
-        bottom: y + btnH
-      };
-
-      // Yes ile kesişmesin (+buffer)
-      if(!rectsOverlap(cand, yesLocal, 12)){
-        noBtn.style.left = x + "px";
-        noBtn.style.top  = y + "px";
-        noBtn.style.transform = "translate(0,0)";
-        return;
+    function ensureNoAbsolute(){
+      // ✅ Only when we start dodging, we switch to absolute positioning
+      if (noBtn.style.position !== "absolute") {
+        noBtn.style.position = "absolute";
       }
     }
 
-    // aşırı nadir: bulamazsa yes'ten uzağa sabitle
-    noBtn.style.left = (minX) + "px";
-    noBtn.style.top  = (maxY) + "px";
-    noBtn.style.transform = "translate(0,0)";
-  }
+    function moveNoButton(){
+      ensureNoAbsolute();
 
-  function showResult(){
-    result.style.display = "block";
-    dodgingEnabled = false;
+      const rect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
 
-    // küçük kalpler
-    const r = stageBox.getBoundingClientRect();
-    for(let i=0; i<12; i++){
-      spawnHeart(Math.random()*r.width, r.height*0.62 + Math.random()*30);
+      const pad = 14;
+      const maxX = rect.width - btnRect.width - pad;
+      const maxY = rect.height - btnRect.height - pad;
+
+      const x = Math.random() * maxX + pad;
+      const y = Math.random() * maxY + pad;
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+      noBtn.style.transform = `translate(0,0)`;
+
+      dodges++;
+      setHintByDodges();
     }
 
-    // mobilde görünür olsun diye aşağı kaydır (scroll artık var)
-    setTimeout(() => result.scrollIntoView({behavior:"smooth", block:"start"}), 120);
-  }
+    // Make it hard to click "No"
+    const dodgeEvents = ["mouseenter", "touchstart", "pointerenter"];
+    dodgeEvents.forEach(ev => {
+      noBtn.addEventListener(ev, (e) => {
+        if (ev === "touchstart") e.preventDefault();
+        moveNoButton();
+      }, {passive:false});
+    });
 
-  yesBtn.addEventListener("click", () => showResult());
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
 
-  function dodge(){
-    if(!dodgingEnabled) return;
-    dodgeCount++;
-    setHint();
-    moveNoAvoidingYes();
-  }
-
-  noBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    dodge();
-  });
-  noBtn.addEventListener("mouseenter", () => dodge());
-
-  stageBox.addEventListener("click", (e) => {
-    const r = stageBox.getBoundingClientRect();
-    spawnHeart(e.clientX - r.left, e.clientY - r.top);
-  });
-
-  copyBtn.addEventListener("click", async () => {
-    const text = `Ceren said YES! 💖`;
-    try{
-      await navigator.clipboard.writeText(text);
-      copyBtn.textContent = "Kopyalandı ✓";
-      setTimeout(() => copyBtn.textContent = "Mesajı kopyala", 1200);
-    }catch{
-      copyBtn.textContent = "Kopyalanamadı";
-      setTimeout(() => copyBtn.textContent = "Mesajı kopyala", 1200);
+    function spawnHeart(x, y){
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      const emojis = ["💖","💘","💗","💞","💓","❤️"];
+      heart.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      heart.style.left = x + "px";
+      heart.style.top = y + "px";
+      heart.style.fontSize = (16 + Math.random()*18) + "px";
+      heart.style.animationDuration = (750 + Math.random()*500) + "ms";
+      stage.appendChild(heart);
+      setTimeout(() => heart.remove(), 1400);
     }
-  });
 
-  replayBtn.addEventListener("click", () => location.reload());
+    function burstHearts(){
+      const rect = stage.getBoundingClientRect();
+      const n = 26;
+      for(let i=0;i<n;i++){
+        const x = Math.random()*rect.width;
+        const y = rect.height*(0.55 + Math.random()*0.35);
+        spawnHeart(x, y);
+      }
+    }
 
-  // İlk yükleme: No/Yes başlangıç konumları CSS’teki gibi kalsın (eski şablon)
-  window.addEventListener("load", () => {
-    // ilk kaçıştan sonra absolute top/left ile yer değiştiriyoruz.
-    // burada bir şey yapmıyoruz.
-  });
+    function showResult(){
+      burstHearts();
+      result.style.display = "block";
 
-  // Ekran döndürmede no butonu saçma konumda kalmışsa, bir sonraki kaçışta düzelir.
-</script>
+      // YES lyric
+      hint.textContent = "Cause, girl, I was made for you\nAnd, girl, you were made for me";
 
+      yesBtn.disabled = true;
+      noBtn.style.display = "none";
+
+      // Gentle extra hearts
+      let t = 0;
+      const interval = setInterval(() => {
+        t++;
+        const rect = stage.getBoundingClientRect();
+        spawnHeart(Math.random()*rect.width, Math.random()*rect.height);
+        if(t > 24) clearInterval(interval);
+      }, 120);
+    }
+
+    yesBtn.addEventListener("click", showResult);
+
+    copyBtn.addEventListener("click", async () => {
+      const text = `${toName} said YES! 💖`;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Kopyalandı ✓";
+        setTimeout(()=> copyBtn.textContent="Mesajı kopyala", 1200);
+      }catch{
+        copyBtn.textContent = "Kopyalanamadı";
+        setTimeout(()=> copyBtn.textContent="Mesajı kopyala", 1200);
+      }
+    });
+
+    replayBtn.addEventListener("click", () => location.reload());
+
+    // Initial hint
+    window.addEventListener("load", () => {
+      setHintByDodges();
+      // No button stays static on first screen; it becomes absolute once it starts dodging.
+    });
+
+    // Clicking stage spawns a heart
+    stage.addEventListener("click", (e) => {
+      const rect = stage.getBoundingClientRect();
+      spawnHeart(e.clientX - rect.left, e.clientY - rect.top);
+    });
+
+    // Photo fallback if not found
+    resultPhotoImg.addEventListener("error", () => {
+      resultPhotoImg.style.display = "none";
+      photoFallback.style.display = "grid";
+    });
+  </script>
 </body>
 </html>
