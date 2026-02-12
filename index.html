@@ -39,7 +39,7 @@
     }
 
     .card{
-      width:min(720px, 92vw);
+      width:min(820px, 94vw);
       background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid #ffffff1c;
       border-radius:28px;
@@ -80,7 +80,7 @@
     .stage{
       margin-top:16px;
       position:relative;
-      height:220px;
+      height:240px;
       border-radius:22px;
       border:1px dashed #ffffff26;
       background: #00000018;
@@ -125,7 +125,7 @@
     .no{
       border-color: #ef444455;
       background: linear-gradient(180deg, #ef444433, #ef444418);
-      position:absolute; /* kaçmak için */
+      position:absolute;
       left:50%;
       top:58%;
       transform: translate(-50%,-50%);
@@ -136,6 +136,7 @@
       color:#ffffffb0;
       font-size:13px;
       text-align:center;
+      white-space:pre-line;
     }
 
     /* Heart particles */
@@ -171,6 +172,7 @@
       margin:0;
       color:var(--muted);
       line-height:1.5;
+      white-space:pre-line;
     }
     .small{
       font-size:12px;
@@ -197,10 +199,107 @@
       font-size:13px;
     }
 
-    /* Mobile: stage height */
-    @media (max-width:520px){
-      .stage{height:260px}
-      .no{top:64%}
+    /* Gallery */
+    .galleryWrap{
+      margin-top:14px;
+      display:none;
+      border-radius:18px;
+      border:1px solid #ffffff24;
+      background:#ffffff0c;
+      padding:14px;
+    }
+    .galleryTitle{
+      margin:0 0 10px;
+      color:#ffffffc8;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+    .tile{
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #ffffff20;
+      background:#00000025;
+      aspect-ratio: 1 / 1;
+      position:relative;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .2s ease;
+    }
+    .tile:hover{transform: translateY(-1px); border-color:#ffffff38}
+    .tile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.65);
+      display:none;
+      place-items:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modalCard{
+      width:min(920px, 96vw);
+      background: #0b0b14cc;
+      border:1px solid #ffffff24;
+      border-radius:20px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+    .modalImg{
+      width:100%;
+      height:min(72vh, 640px);
+      object-fit:contain;
+      background:#00000055;
+      display:block;
+    }
+    .modalTop{
+      position:absolute;
+      top:10px;
+      right:10px;
+      display:flex;
+      gap:10px;
+      z-index:2;
+    }
+    .iconBtn{
+      background:#ffffff10;
+      border:1px solid #ffffff22;
+      color:#fff;
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .navBtn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:#ffffff10;
+      border:1px solid #ffffff22;
+      color:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .prevBtn{left:10px}
+    .nextBtn{right:10px}
+
+    @media (max-width:640px){
+      .stage{height:270px}
+      .gallery{grid-template-columns: repeat(2, 1fr);}
+      .modalImg{height:min(70vh, 560px)}
     }
   </style>
 </head>
@@ -209,12 +308,8 @@
     <div class="card" id="card">
       <div class="badge">💌 <span id="badgeText">A tiny question for Ceren</span></div>
 
-      <h1 class="title" id="q">
-        Ceren… will you be my valentine? 🙂
-      </h1>
-      <p class="subtitle" id="sub">
-        Just answer honestly. Totally not a trap. Definitely not.
-      </p>
+      <h1 class="title" id="q">Ceren… will you be my valentine? 🙂</h1>
+      <p class="subtitle" id="sub">Just answer honestly. Totally not a trap. Definitely not.</p>
 
       <div class="stage" id="stage" aria-label="Valentine stage">
         <div class="buttons">
@@ -230,8 +325,7 @@
       <div class="result" id="result">
         <h2 id="resultTitle">Yesss! 💘</h2>
         <p id="resultText">
-          Tamam, artık resmi: birlikte minik bir Valentine planı yapıyoruz.
-          (Not: Bu sayfa gülüşünü görmek için yazıldı.)
+Tamam artık sana rahatça "Sevgilim" demeye devam edebileceğim.
         </p>
         <div class="small" id="signature">— Alp</div>
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -240,10 +334,28 @@
         </div>
       </div>
 
+      <!-- Photo Gallery (shows after YES) -->
+      <div class="galleryWrap" id="galleryWrap">
+        <div class="galleryTitle">💞 Small gallery (tap to enlarge)</div>
+        <div class="gallery" id="gallery"></div>
+      </div>
+
       <div class="footer">
         <span id="footerLeft">Made with mild panic & lots of love.</span>
         <span id="footerRight">💗</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modalCard" role="dialog" aria-modal="true">
+      <div class="modalTop">
+        <button class="iconBtn" id="closeModal" aria-label="Close">✕</button>
+      </div>
+      <button class="navBtn prevBtn" id="prevBtn" aria-label="Previous">‹</button>
+      <img class="modalImg" id="modalImg" alt="Photo" />
+      <button class="navBtn nextBtn" id="nextBtn" aria-label="Next">›</button>
     </div>
   </div>
 
@@ -269,7 +381,60 @@
     const copyBtn = document.getElementById("copyBtn");
     const replayBtn = document.getElementById("replayBtn");
 
+    const galleryWrap = document.getElementById("galleryWrap");
+    const galleryEl = document.getElementById("gallery");
+
+    // Modal elements
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const closeModal = document.getElementById("closeModal");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
     let dodges = 0;
+
+    // --- Progressive hint messages
+    const hintStart = [
+      "“No” seçeneği biraz utangaç olabilir…",
+      "Bu bir romantik kovalamaca.",
+      "No kaçıyor ama kalbi burada."
+    ];
+
+    const hintSweet = [
+      "Aslında ‘Yes’ demek istiyor olabilir.",
+      "Bence evren ‘Yes’ diyor.",
+      "No bile vazgeçmek üzere."
+    ];
+
+    const hintFunny = [
+      "Bu kadar kaçış biraz şüpheli 😏",
+      "No butonu: panic mode.",
+      "Kaçmak çözüm değil 👀"
+    ];
+
+    const hintFate = "Artık kader devreye girdi 💘";
+
+    function setHintByDodges(){
+      // 0-2: start (rotate)
+      if (dodges <= 2){
+        hint.textContent = hintStart[Math.min(dodges, hintStart.length-1)];
+        return;
+      }
+      // 3-4: sweet (rotate)
+      if (dodges <= 4){
+        const idx = (dodges - 3) % hintSweet.length;
+        hint.textContent = hintSweet[idx];
+        return;
+      }
+      // 5-7: funny (rotate)
+      if (dodges <= 7){
+        const idx = (dodges - 5) % hintFunny.length;
+        hint.textContent = hintFunny[idx];
+        return;
+      }
+      // 8+: fate
+      hint.textContent = hintFate;
+    }
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
@@ -277,7 +442,6 @@
       const rect = stage.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
 
-      // Random target within stage bounds
       const pad = 14;
       const maxX = rect.width - btnRect.width - pad;
       const maxY = rect.height - btnRect.height - pad;
@@ -290,23 +454,21 @@
       noBtn.style.transform = `translate(0,0)`;
 
       dodges++;
-      if(dodges === 2) hint.textContent = "Hımm… No baya kaçıyor 😄";
-      if(dodges === 4) hint.textContent = "Tamam, bu noktada cevap belli gibi…";
-      if(dodges === 7) hint.textContent = "No: *parkur modunda*";
-      if(dodges >= 10) hint.textContent = "No artık emekli oldu. 😌";
+      setHintByDodges();
+
+      // Optional: after many dodges, reduce annoyance by slowing movement a bit
     }
 
     // Make it hard to click "No" on desktop + mobile
     const dodgeEvents = ["mouseenter", "touchstart", "pointerenter"];
     dodgeEvents.forEach(ev => {
       noBtn.addEventListener(ev, (e) => {
-        // On touch, prevent accidental click
         if (ev === "touchstart") e.preventDefault();
         moveNoButton();
       }, {passive:false});
     });
 
-    // If someone actually clicks No (rare), still dodge + tease
+    // If someone actually clicks No (rare), still dodge
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
       moveNoButton();
@@ -335,14 +497,85 @@
       }
     }
 
+    // --- Photo list (you will upload later)
+    // Put your images in repo: photos/1.jpg ... photos/6.jpg
+    const photos = [
+      "photos/1.jpg",
+      "photos/2.jpg",
+      "photos/3.jpg",
+      "photos/4.jpg",
+      "photos/5.jpg",
+      "photos/6.jpg"
+    ];
+
+    function buildGallery(){
+      galleryEl.innerHTML = "";
+      photos.forEach((src, i) => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.innerHTML = `<img src="${src}" alt="Photo ${i+1}" loading="lazy" />`;
+        tile.addEventListener("click", () => openModal(i));
+        galleryEl.appendChild(tile);
+      });
+    }
+
+    let currentIndex = 0;
+
+    function openModal(i){
+      currentIndex = i;
+      modalImg.src = photos[currentIndex];
+      modal.style.display = "grid";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModalFn(){
+      modal.style.display = "none";
+      document.body.style.overflow = "hidden"; // keep hidden because page uses overflow hidden
+      // Note: the page already uses overflow hidden for background; OK.
+    }
+
+    function showPrev(){
+      currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+      modalImg.src = photos[currentIndex];
+    }
+
+    function showNext(){
+      currentIndex = (currentIndex + 1) % photos.length;
+      modalImg.src = photos[currentIndex];
+    }
+
+    closeModal.addEventListener("click", closeModalFn);
+    prevBtn.addEventListener("click", showPrev);
+    nextBtn.addEventListener("click", showNext);
+
+    // Close modal by clicking outside card
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModalFn();
+    });
+
+    // Keyboard controls
+    window.addEventListener("keydown", (e) => {
+      if (modal.style.display !== "grid") return;
+      if (e.key === "Escape") closeModalFn();
+      if (e.key === "ArrowLeft") showPrev();
+      if (e.key === "ArrowRight") showNext();
+    });
+
     function showResult(){
       burstHearts();
       result.style.display = "block";
-      hint.textContent = "Kabul edildi. 💍 (şaka… şimdilik)";
+
+      // YES hint lyric
+      hint.textContent = "Cause, girl, I was made for you\nAnd, girl, you were made for me";
+
       yesBtn.disabled = true;
       noBtn.style.display = "none";
 
-      // Extra confetti-ish hearts over time
+      // Show gallery
+      buildGallery();
+      galleryWrap.style.display = "block";
+
+      // Extra hearts over time
       let t = 0;
       const interval = setInterval(() => {
         t++;
@@ -369,18 +602,18 @@
     replayBtn.addEventListener("click", () => location.reload());
 
     // Place "No" inside stage initially with absolute positioning
-    // Convert initial centered absolute to stage coords:
     window.addEventListener("load", () => {
       const rect = stage.getBoundingClientRect();
       const btn = noBtn.getBoundingClientRect();
-      const x = rect.width/2 + 78; // slightly to the right of center
+      const x = rect.width/2 + 78;
       const y = rect.height/2 + 18;
       noBtn.style.left = clamp(x - btn.width/2, 14, rect.width - btn.width - 14) + "px";
       noBtn.style.top  = clamp(y - btn.height/2, 14, rect.height - btn.height - 14) + "px";
       noBtn.style.transform = "translate(0,0)";
+      setHintByDodges();
     });
 
-    // Clicking stage spawns a heart (nice touch)
+    // Clicking stage spawns a heart
     stage.addEventListener("click", (e) => {
       const rect = stage.getBoundingClientRect();
       spawnHeart(e.clientX - rect.left, e.clientY - rect.top);
